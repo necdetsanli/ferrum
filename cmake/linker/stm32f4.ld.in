@@ -1,0 +1,85 @@
+/* stm32f4.ld.in */
+/* Linker script */
+/* Author: Necdet Şanlı */
+
+/* Entry Point */
+ENTRY(Reset_Handler)
+
+/* Memory Areas */
+MEMORY
+{
+    FLASH (rx) : ORIGIN = 0x08000000, LENGTH = @FLASH_SIZE@
+    RAM (rwx) : ORIGIN = 0x20000000, LENGTH = @RAM_SIZE@
+}
+
+/* Highest address of the user mode stack */
+_estack = ORIGIN(RAM) + LENGTH(RAM);    /* End of RAM */
+_Min_Stack_Size = 0x400; /* required amount of stack */
+_sstack = _estack - _Min_Stack_Size;
+_Min_Heap_Size = 0;      /* required amount of heap, we are not going to use heap at least for now  */
+
+SECTIONS {
+    /* Interrupt vector table, must be placed at the start of FLASH for Cortex-M4 boot */
+    .isr_vector :
+    {
+        . = ALIGN(4); /* Aligns location counter to 4-bytes */
+        KEEP(*(.isr_vector)) /* Don't throw this section with --gc-sections */
+        . = ALIGN(4); /* ARM expects word-aligned access */
+    } >FLASH
+
+    /* Executable program code */
+    .text :
+    {
+        . = ALIGN(4);
+        *(.text)
+        *(.text*)
+        . = ALIGN(4);
+        _etext = .;
+    } >FLASH
+
+    /* Read-only constant data */
+    .rodata :
+    {
+        . = ALIGN(4);
+        *(.rodata)
+        *(.rodata*)
+        . = ALIGN(4);
+    } >FLASH
+
+    _sidata = LOADADDR(.data); /* Load address of .data section in FLASH, used by startup to copy to RAM */
+
+    /* Initialized variables, stored in FLASH and copied to RAM at startup */
+    .data :
+    {
+        . = ALIGN(4);
+        _sdata = .;
+        *(.data)
+        *(.data*)
+        *(.RamFunc)
+        *(.RamFunc*)
+        . = ALIGN(4);
+        _edata = .;
+    } >RAM AT> FLASH
+
+    /* Zero-initialized variables, cleared by startup code */
+    .bss (NOLOAD)
+    {
+        . = ALIGN(4)
+        _sbss = .;
+        *(.bss)
+        *(.bss*)
+        *(COMMON)
+        . = ALIGN(4);
+        _ebss = .;
+
+    } >RAM
+
+    /* Compile-time check to ensure heap and stack fit in RAM */
+    ._user_heap_stack (NOLOAD) :
+    {
+        . = ALIGN(8); /* Stack pointer must be 8-byte aligned according to AAPCS */
+        . = . + _Min_Heap_Size;
+        . = . + _Min_Stack_Size;
+        . = ALIGN(8);
+    } >RAM
+}
