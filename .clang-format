@@ -9,12 +9,16 @@ IndentWidth: 4
 TabWidth: 4
 UseTab: Never
 ColumnLimit: 160
+BinPackLongBracedList: false
+Cpp11BracedListStyle: true
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterReturnType: None
 SpaceBeforeParens: ControlStatements
 PointerAlignment: Right
+AlignTrailingComments: true
+SpacesBeforeTrailingComments: 1
 AlignConsecutiveMacros:
   Enabled: true
   AcrossEmptyLines: false

@@ -1,6 +1,14 @@
 {
     "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.autocomplete": "Default",
     "C_Cpp.dimInactiveRegions": true,
+    "editor.suggestOnTriggerCharacters": true,
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": false
+    },
+    "editor.suggest.showConstants": true,
     "files.associations": {
         "*.s": "arm",
         "*.S": "arm",
