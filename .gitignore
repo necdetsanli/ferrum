@@ -1,0 +1,38 @@
+# Build
+build/
+
+# Tests
+tests/build/
+tests/ceedling summary/
+tests/.cache/
+
+# Static Analysis
+.codesight/
+
+# CMake
+CMakeUserPresets.json
+
+# IDE
+.vscode/ceedling-shell.cmd
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Debug
+*.log
+
+# Compiled
+*.o
+*.elf
+*.bin
+*.hex
+*.map
+*.d
+*.lst

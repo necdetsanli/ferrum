@@ -1,0 +1,15 @@
+{
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.dimInactiveRegions": true,
+    "files.associations": {
+        "*.s": "arm",
+        "*.S": "arm",
+        "*.ld": "linkerscript",
+        "*.lds": "linkerscript",
+        "*.map": "plaintext"
+    },
+    "ceedlingExplorer.projectPath": "tests",
+    "ceedlingExplorer.shellPath": "${workspaceFolder}/.vscode/ceedling-shell.cmd",
+    "editor.formatOnSave": true,
+    "debug.showInStatusBar": "always"
+}

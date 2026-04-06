@@ -1,0 +1,21 @@
+---
+BasedOnStyle: LLVM
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterControlStatement: Never
+  AfterFunction: true
+  BeforeElse: true
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 160
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterReturnType: None
+SpaceBeforeParens: ControlStatements
+PointerAlignment: Right
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false

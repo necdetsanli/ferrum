@@ -1,0 +1,98 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug: ST-Link (OpenOCD)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "preLaunchTask": "CMake: Build",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/stm32f411ce-debug/ferrum.elf",
+            "svdFile": "${workspaceFolder}/svd/STM32F411.svd",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg",
+                "${workspaceFolder}/openocd.cfg"
+            ],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none",
+            "gdbPath": "arm-none-eabi-gdb",
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 4
+            },
+            "swoConfig": {
+                "enabled": true,
+                "cpuFrequency": 100000000,
+                "swoFrequency": 2000000,
+                "source": "probe",
+                "decoders": [
+                    {
+                        "type": "console",
+                        "label": "SWO",
+                        "port": 0
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Debug: J-Link",
+            "type": "cortex-debug",
+            "request": "launch",
+            "preLaunchTask": "CMake: Build",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/stm32f411ce-debug/ferrum.elf",
+            "svdFile": "${workspaceFolder}/svd/STM32F411.svd",
+            "servertype": "jlink",
+            "device": "STM32F411CE",
+            "interface": "swd",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none",
+            "gdbPath": "arm-none-eabi-gdb",
+            "rttConfig": {
+                "enabled": true,
+                "address": "auto",
+                "decoders": [
+                    {
+                        "port": 0,
+                        "type": "console"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "Debug: DAP-Link (OpenOCD)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "preLaunchTask": "CMake: Build",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/stm32f411ce-debug/ferrum.elf",
+            "svdFile": "${workspaceFolder}/svd/STM32F411.svd",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/cmsis-dap.cfg",
+                "target/stm32f4x.cfg",
+                "${workspaceFolder}/openocd.cfg"
+            ],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none",
+            "gdbPath": "arm-none-eabi-gdb"
+        },
+        {
+            "name": "Debug: Black Magic Probe",
+            "type": "cortex-debug",
+            "request": "launch",
+            "preLaunchTask": "CMake: Build",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/stm32f411ce-debug/ferrum.elf",
+            "svdFile": "${workspaceFolder}/svd/STM32F411.svd",
+            "servertype": "bmp",
+            "BMPGDBSerialPort": "COM3",
+            "interface": "swd",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none",
+            "gdbPath": "arm-none-eabi-gdb"
+        }
+    ]
+}

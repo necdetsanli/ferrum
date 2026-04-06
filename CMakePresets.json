@@ -1,0 +1,64 @@
+{
+    "version": 10,
+    "cmakeMinimumRequired": {
+        "major": 4,
+        "minor": 0,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "stm32f411ce-debug",
+            "displayName": "STM32F411CE Debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/arm-none-eabi.cmake",
+            "cacheVariables": {
+                "TARGET_MCU": "stm32f411ce",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "stm32f411ce-release",
+            "displayName": "STM32F411CE Release",
+            "inherits": "stm32f411ce-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "stm32f401ce-debug",
+            "displayName": "STM32F401CE Debug",
+            "inherits": "stm32f411ce-debug",
+            "cacheVariables": {
+                "TARGET_MCU": "stm32f401ce"
+            }
+        },
+        {
+            "name": "stm32f401ce-release",
+            "displayName": "STM32F401CE Release",
+            "inherits": "stm32f401ce-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "stm32f411ce-debug",
+            "configurePreset": "stm32f411ce-debug"
+        },
+        {
+            "name": "stm32f411ce-release",
+            "configurePreset": "stm32f411ce-release"
+        },
+        {
+            "name": "stm32f401ce-debug",
+            "configurePreset": "stm32f401ce-debug"
+        },
+        {
+            "name": "stm32f401ce-release",
+            "configurePreset": "stm32f401ce-release"
+        }
+    ]
+}

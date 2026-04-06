@@ -1,0 +1,40 @@
+{
+    "configurations": [
+        {
+            "name": "STM32F411 (ARM)",
+            "compileCommands": "${workspaceFolder}/build/stm32f411ce-debug/compile_commands.json",
+            "compilerPath": "arm-none-eabi-gcc",
+            "intelliSenseMode": "gcc-arm",
+            "cStandard": "gnu11",
+            "defines": [
+                "STM32F411xx",
+                "__ARM_ARCH_7EM__",
+                "__FPU_PRESENT=1"
+            ],
+            "includePath": [
+                "${workspaceFolder}/core/include",
+                "${workspaceFolder}/peripherals/include",
+                "${workspaceFolder}/cmsis/arm",
+                "${workspaceFolder}/cmsis/st",
+                "${workspaceFolder}/system/stm32f4",
+                "${workspaceFolder}/config/boards"
+            ]
+        },
+        {
+            "name": "Host (Test)",
+            "compilerPath": "gcc",
+            "intelliSenseMode": "gcc-x64",
+            "cStandard": "gnu11",
+            "defines": [
+                "FERRUM_TEST",
+                "FERRUM_HOST"
+            ],
+            "includePath": [
+                "${workspaceFolder}/core/include",
+                "${workspaceFolder}/peripherals/include",
+                "${workspaceFolder}/tests/mocks"
+            ]
+        }
+    ],
+    "version": 4
+}
