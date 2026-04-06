@@ -13,6 +13,7 @@
 *.cmake text eol=lf
 *.ld text eol=lf
 *.lds text eol=lf
+*.ld.in text eol=lf
 CMakeLists.txt text eol=lf
 
 # Config
