@@ -77,5 +77,12 @@ add_link_options(
     # -specs=nosys.specs # Make system calls stub
     -Wl,--gc-sections # Throw unused sections
     -Wl,--Map=${PROJECT_NAME}.map
-    -T="${CMAKE_BINARY_DIR}/${TARGET_MCU}.ld"
+    -T ${CMAKE_BINARY_DIR}/${TARGET_MCU}.ld
+)
+
+# Build targets
+add_executable(
+    "${PROJECT_NAME}"
+    "${CMAKE_SOURCE_DIR}/examples/01_blinky/main.c"
+    "${CMAKE_SOURCE_DIR}/system/stm32f4/startup_stm32f4.c"
 )
