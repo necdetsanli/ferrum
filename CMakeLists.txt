@@ -46,6 +46,9 @@ add_compile_options(
     -mfpu=fpv4-sp-d16 # FPU type of Cortex-M4 (single precision, 16 double-word register)
 )
 
+# Generates .ld file for target MCU
+configure_file("${CMAKE_SOURCE_DIR}/cmake/linker/stm32f4.ld.in" "${CMAKE_BINARY_DIR}/${TARGET_MCU}.ld")
+
 # Set warning flags for compiler
 add_compile_options(
     -Wall
@@ -55,7 +58,7 @@ add_compile_options(
     -Wdouble-promotion # Warns if float promotes to double
     -Wformat-truncation # Warns if there is a risk of buffer overflow
     -Wconversion # Warns if there is a implicit type conversion
-    -Wcast-align # Warns if there is a pointer cast which can cause allignment issue
+    -Wcast-align # Warns if there is a pointer cast which can cause alignment issue
 )
 
 # Optimization and section flags
@@ -74,4 +77,5 @@ add_link_options(
     # -specs=nosys.specs # Make system calls stub
     -Wl,--gc-sections # Throw unused sections
     -Wl,--Map=${PROJECT_NAME}.map
+    -T="${CMAKE_BINARY_DIR}/${TARGET_MCU}.ld"
 )
