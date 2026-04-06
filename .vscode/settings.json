@@ -6,6 +6,7 @@
         "*.S": "arm",
         "*.ld": "linkerscript",
         "*.lds": "linkerscript",
+        "*.ld.in": "linkerscript",
         "*.map": "plaintext"
     },
     "ceedlingExplorer.projectPath": "tests",
