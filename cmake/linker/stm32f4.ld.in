@@ -62,9 +62,9 @@ SECTIONS {
     } >RAM AT> FLASH
 
     /* Zero-initialized variables, cleared by startup code */
-    .bss (NOLOAD)
+    .bss (NOLOAD) :
     {
-        . = ALIGN(4)
+        . = ALIGN(4);
         _sbss = .;
         *(.bss)
         *(.bss*)
