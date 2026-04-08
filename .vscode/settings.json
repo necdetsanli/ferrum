@@ -1,6 +1,6 @@
 {
     "C_Cpp.intelliSenseEngine": "default",
-    "C_Cpp.autocomplete": "Default",
+    "C_Cpp.autocomplete": "default",
     "C_Cpp.dimInactiveRegions": true,
     "editor.suggestOnTriggerCharacters": true,
     "editor.quickSuggestions": {

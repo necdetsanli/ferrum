@@ -2,9 +2,10 @@
     "configurations": [
         {
             "name": "STM32F411 (ARM)",
-            "compileCommands": "${workspaceFolder}/build/stm32f411ce-debug/compile_commands.json",
+            // "compileCommands": "${workspaceFolder}/build/stm32f411ce-debug/compile_commands.json",
             "compilerPath": "arm-none-eabi-gcc",
             "intelliSenseMode": "gcc-arm",
+            "configurationProvider": "ms-vscode.cmake-tools",
             "cStandard": "gnu11",
             "defines": [
                 "STM32F411xx",
