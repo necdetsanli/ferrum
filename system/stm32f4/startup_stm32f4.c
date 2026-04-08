@@ -1,26 +1,42 @@
 /**
- * @file startup_stm32f4.c
- * @author Necdet Sanli (me@necdetsanli.com)
- * @brief Startup code for STM32F4 written in C. Includes vector table and default handlers.
- * @version 0.1
- * @date 2026-04-06
+ * @file    startup_stm32f4.c
+ * @author  Necdet Sanli (me@necdetsanli.com)
+ * @brief   C startup code and vector table for STM32F4 MCUs.
+ *
+ * Provides the Cortex-M4 vector table, the Reset_Handler that brings the
+ * C runtime up (.data copy from Flash to RAM, .bss zeroing), the call to
+ * SystemInit() for clock configuration, and the transfer of control to
+ * main(). All exception and IRQ handlers are declared as weak aliases of
+ * Default_Handler so that user code can override any of them simply by
+ * defining a function with the matching name.
  */
 
+#include "system_stm32f4.h"
 #include <stdint.h>
 
+/** Function pointer type for ISR table entries. */
 typedef void (*ISRHandler)(void);
 
+/** Placeholder for reserved slots in the vector table. */
 #define RESERVED_SLOT ((ISRHandler)0)
 
-extern uint32_t _estack;
-extern uint32_t _sidata;
-extern uint32_t _sdata;
-extern uint32_t _edata;
-extern uint32_t _sbss;
-extern uint32_t _ebss;
+/* Symbols provided by the linker script (see stm32f4.ld.in) */
+extern uint32_t _estack; /**< Top of stack (initial MSP value)             */
+extern uint32_t _sidata; /**< Load address of .data section in Flash       */
+extern uint32_t _sdata;  /**< Start of .data section in RAM                */
+extern uint32_t _edata;  /**< End of .data section in RAM                  */
+extern uint32_t _sbss;   /**< Start of .bss section in RAM                 */
+extern uint32_t _ebss;   /**< End of .bss section in RAM                   */
 
 extern int main(void);
 
+/**
+ * @brief   Default handler for any unimplemented exception or interrupt.
+ *
+ * Spins forever so that an unexpected interrupt can be caught with a
+ * debugger by inspecting the stacked PC. All weakly-aliased handlers
+ * resolve to this function unless overridden by user code.
+ */
 __attribute__((weak)) void Default_Handler(void)
 {
     while (1) {
@@ -28,7 +44,7 @@ __attribute__((weak)) void Default_Handler(void)
     }
 }
 
-/* Cortex-M4 System Exceptions */
+/* ===== Cortex-M4 system exception handlers (weak aliases) ================= */
 __attribute__((weak, alias("Default_Handler"))) void NMI_Handler(void);
 __attribute__((weak, alias("Default_Handler"))) void HardFault_Handler(void);
 __attribute__((weak, alias("Default_Handler"))) void MemManage_Handler(void);
@@ -39,7 +55,7 @@ __attribute__((weak, alias("Default_Handler"))) void DebugMon_Handler(void);
 __attribute__((weak, alias("Default_Handler"))) void PendSV_Handler(void);
 __attribute__((weak, alias("Default_Handler"))) void SysTick_Handler(void);
 
-/* STM32F4 Peripheral Interrupts used by STM32F411 mapping */
+/* ===== STM32F4 peripheral interrupt handlers (weak aliases) =============== */
 __attribute__((weak, alias("Default_Handler"))) void WWDG_IRQHandler(void);
 __attribute__((weak, alias("Default_Handler"))) void PVD_IRQHandler(void);
 __attribute__((weak, alias("Default_Handler"))) void TAMP_STAMP_IRQHandler(void);
@@ -96,10 +112,23 @@ __attribute__((weak, alias("Default_Handler"))) void I2C3_EV_IRQHandler(void);
 __attribute__((weak, alias("Default_Handler"))) void I2C3_ER_IRQHandler(void);
 __attribute__((weak, alias("Default_Handler"))) void FPU_IRQHandler(void);
 __attribute__((weak, alias("Default_Handler"))) void SPI4_IRQHandler(void);
-#if defined(STM32F411xx)
+#if defined(STM32F411xE)
 __attribute__((weak, alias("Default_Handler"))) void SPI5_IRQHandler(void);
 #endif
 
+/**
+ * @brief   Reset entry point. Brings up the C runtime and jumps to main().
+ *
+ * Executed by hardware after reset, with the initial MSP loaded from
+ * vector slot 0 and PC loaded from vector slot 1. Performs:
+ *   1. Copy of initialized data from Flash (LMA) to RAM (VMA).
+ *   2. Zero-initialization of the .bss section.
+ *   3. Call to SystemInit() to configure the clock tree.
+ *   4. Call to main(). Spins forever if main() ever returns.
+ *
+ * Marked noreturn so the compiler can omit prologue/epilogue and warn on
+ * any accidental return path.
+ */
 __attribute__((noreturn)) void Reset_Handler(void)
 {
     uint32_t *src = (uint32_t *)&_sidata;
@@ -116,6 +145,8 @@ __attribute__((noreturn)) void Reset_Handler(void)
         *bss_start++ = 0;
     }
 
+    SystemInit();
+
     main();
 
     while (1) {
@@ -123,6 +154,19 @@ __attribute__((noreturn)) void Reset_Handler(void)
     }
 }
 
+/**
+ * @brief   Cortex-M4 vector table for STM32F4.
+ *
+ * Placed in the .isr_vector section by the linker script so it lands at
+ * the start of Flash (0x08000000). Slot 0 holds the initial stack pointer,
+ * slot 1 the reset vector, slots 2..15 the system exceptions, and the
+ * remainder the external interrupt vectors in the order defined by the
+ * STM32F411 reference manual (RM0383 Table 38). Peripherals not present
+ * on F411 are filled with RESERVED_SLOT to preserve correct IRQ numbering.
+ *
+ * The 'used' attribute prevents --gc-sections from discarding the table
+ * even though no C code references it explicitly.
+ */
 __attribute__((section(".isr_vector"), used)) ISRHandler isr_vector_table[] = {
     (ISRHandler)&_estack, /* 0  - Initial stack pointer */
     Reset_Handler,        /* 1  - Reset */
@@ -141,7 +185,7 @@ __attribute__((section(".isr_vector"), used)) ISRHandler isr_vector_table[] = {
     PendSV_Handler,       /* 14 - PendSV */
     SysTick_Handler,      /* 15 - SysTick */
 
-    /* External Interrupts (IRQ 0..81), STM32 startup .s order */
+    /* External Interrupts (IRQ 0..85), STM32F411 mapping (RM0383 Table 38) */
     WWDG_IRQHandler,               /* 0  */
     PVD_IRQHandler,                /* 1  */
     TAMP_STAMP_IRQHandler,         /* 2  */
@@ -227,7 +271,7 @@ __attribute__((section(".isr_vector"), used)) ISRHandler isr_vector_table[] = {
     RESERVED_SLOT,                 /* 82 */
     RESERVED_SLOT,                 /* 83 */
     SPI4_IRQHandler,               /* 84 */
-#ifdef STM32F411xx
+#ifdef STM32F411xE
     SPI5_IRQHandler, /* 85 */
 #endif
 };
